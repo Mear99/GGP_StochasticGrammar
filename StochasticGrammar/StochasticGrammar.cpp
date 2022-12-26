@@ -12,9 +12,16 @@ int main()
     LeafNode* node = new LeafNode("test");
     LeafNode* node2 = new LeafNode("alt");
     SelectNode* nodeSelect = new SelectNode();
-    nodeSelect->AddOption(node);
+    SequenceNode* nodeSequence = new SequenceNode();
+
+    nodeSequence->AddElement(node);
+    nodeSequence->AddElement(nodeSelect);
+
+    nodeSelect->AddOption(nodeSequence);
+    nodeSelect->AddOption(nodeSequence);
     nodeSelect->AddOption(node2);
-    Grammar* grammar = new Grammar(nodeSelect);
+
+    Grammar* grammar = new Grammar(nodeSequence);
 
     std::cout << grammar->GenerateSequence() << "\n";
     std::cout << grammar->GenerateSequence() << "\n";

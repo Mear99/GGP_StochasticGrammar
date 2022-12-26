@@ -26,3 +26,21 @@ std::string SelectNode::Parse() {
 void SelectNode::AddOption(Node* option) {
 	m_pOptions.push_back(option);
 }
+
+SequenceNode::SequenceNode() {};
+
+std::string SequenceNode::Parse() {
+
+	std::string result{};
+
+	for (auto& element : m_pElements) {
+		result += element->Parse();
+		result += " ";
+	}
+
+	return result;
+}
+
+void SequenceNode::AddElement(Node* option) {
+	m_pElements.push_back(option);
+}

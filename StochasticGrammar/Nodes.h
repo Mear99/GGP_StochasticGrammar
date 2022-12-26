@@ -48,6 +48,23 @@ class SelectNode : public Node
 		void AddOption(Node* option);
 
 	private:
-		std::string m_Value;
 		std::vector<Node*> m_pOptions;
+};
+
+class SequenceNode : public Node
+{
+public:
+	SequenceNode();
+	virtual ~SequenceNode() = default;
+
+	SequenceNode(const SequenceNode&) = delete;
+	SequenceNode(SequenceNode&&) = delete;
+	SequenceNode& operator=(const SequenceNode&) = delete;
+	SequenceNode& operator=(SequenceNode&&) = delete;
+
+	virtual std::string Parse() override;
+	void AddElement(Node* option);
+
+private:
+	std::vector<Node*> m_pElements;
 };
