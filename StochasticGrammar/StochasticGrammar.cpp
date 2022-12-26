@@ -10,10 +10,19 @@ int main()
     std::cout << "-- Stochastic grammar demo --\n";
 
     LeafNode* node = new LeafNode("test");
-    Grammar* grammar = new Grammar(node);
+    LeafNode* node2 = new LeafNode("alt");
+    SelectNode* nodeSelect = new SelectNode();
+    nodeSelect->AddOption(node);
+    nodeSelect->AddOption(node2);
+    Grammar* grammar = new Grammar(nodeSelect);
 
+    std::cout << grammar->GenerateSequence() << "\n";
+    std::cout << grammar->GenerateSequence() << "\n";
+    std::cout << grammar->GenerateSequence() << "\n";
     std::cout << grammar->GenerateSequence() << "\n";
 
     delete node;
+    delete node2;
+    delete nodeSelect;
     delete grammar;
 }

@@ -1,6 +1,6 @@
 #include "Grammar.h"
 
-Grammar::Grammar(LeafNode* rootNode)
+Grammar::Grammar(Node* rootNode)
 	: m_RootNode{ rootNode }
 {}
 

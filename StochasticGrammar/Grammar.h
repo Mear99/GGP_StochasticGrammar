@@ -5,7 +5,7 @@
 class Grammar
 {
 	public:
-		Grammar( LeafNode* rootNode);
+		Grammar( Node* rootNode);
 		virtual ~Grammar() = default;
 
 		Grammar(const Grammar&) = delete;
@@ -16,6 +16,6 @@ class Grammar
 		std::string GenerateSequence();
 
 	private:
-		LeafNode* m_RootNode;
+		Node* m_RootNode;
 };
 
