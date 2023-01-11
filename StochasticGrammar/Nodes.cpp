@@ -30,6 +30,7 @@ std::string SelectNode::Parse() {
 		int index{ WeightedRandom() };
 		return m_pOptions[index].first->Parse();
 	}
+	return "";
 }
 
 void SelectNode::AddOption(Node* option, float weight) {
@@ -66,4 +67,20 @@ std::string SequenceNode::Parse() {
 
 void SequenceNode::AddElement(Node* option) {
 	m_pElements.push_back(option);
+}
+
+RepetitionNode::RepetitionNode(Node* node, int repetitions)
+	: m_pNode{ node }
+	, m_Repetitions{ repetitions }
+{}
+
+std::string RepetitionNode::Parse() {
+	std::string result{};
+
+	for (int i{ 0 }; i < m_Repetitions; ++i) {
+		result += m_pNode->Parse();
+		result += " ";
+	}
+
+	return result;
 }

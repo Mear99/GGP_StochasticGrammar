@@ -71,3 +71,21 @@ public:
 private:
 	std::vector<Node*> m_pElements;
 };
+
+class RepetitionNode : public Node
+{
+public:
+	RepetitionNode(Node* node, int repetitions);
+	virtual ~RepetitionNode() = default;
+
+	RepetitionNode(const RepetitionNode&) = delete;
+	RepetitionNode(RepetitionNode&&) = delete;
+	RepetitionNode& operator=(const RepetitionNode&) = delete;
+	RepetitionNode& operator=(RepetitionNode&&) = delete;
+
+	virtual std::string Parse() override;
+
+private:
+	Node* m_pNode;
+	int m_Repetitions{ 0 };
+};

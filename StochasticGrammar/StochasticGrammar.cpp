@@ -7,29 +7,16 @@
 
 int main()
 {
-
     std::cout << "-- Stochastic grammar demo --\n";
 
-    LeafNode* node = new LeafNode("test");
-    LeafNode* node2 = new LeafNode("alt");
-    SelectNode* nodeSelect = new SelectNode();
-    SequenceNode* nodeSequence = new SequenceNode();
+    Grammar* grammar = new Grammar();
 
-    nodeSequence->AddElement(node);
-    nodeSequence->AddElement(nodeSelect);
+    grammar->ParseRule("options", "0.5 test | 0.5 alt");
+    grammar->ParseRule("decide", "options # 5");
 
-    nodeSelect->AddOption(nodeSequence, 0.8f);
-    nodeSelect->AddOption(node2, 0.2f);
+    for (int i{ 0 }; i < 10; ++i) {
+        std::cout << grammar->GenerateSequence("decide") << "\n";
+    }
 
-    Grammar* grammar = new Grammar(nodeSequence);
-
-    std::cout << grammar->GenerateSequence() << "\n";
-    std::cout << grammar->GenerateSequence() << "\n";
-    std::cout << grammar->GenerateSequence() << "\n";
-    std::cout << grammar->GenerateSequence() << "\n";
-
-    delete node;
-    delete node2;
-    delete nodeSelect;
     delete grammar;
 }
