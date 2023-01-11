@@ -2,6 +2,15 @@
 #include <random>
 #include <algorithm>
 
+// Random float generator
+std::random_device rd;
+
+//
+// Engines 
+//
+std::mt19937 e2(rd());
+
+
 Node::Node() {};
 
 
@@ -17,14 +26,28 @@ SelectNode::SelectNode() {};
 
 std::string SelectNode::Parse() {
 
-	std::random_device rd;
-	std::shuffle(m_pOptions.begin(), m_pOptions.end(), rd);
-
-	return m_pOptions[0]->Parse();
+	if (m_pOptions.size() > 0) {
+		int index{ WeightedRandom() };
+		return m_pOptions[index].first->Parse();
+	}
 }
 
-void SelectNode::AddOption(Node* option) {
-	m_pOptions.push_back(option);
+void SelectNode::AddOption(Node* option, float weight) {
+	m_pOptions.push_back(std::make_pair(option, weight));
+	m_WeightsSum += weight;
+}
+
+int SelectNode::WeightedRandom() {
+	std::uniform_real_distribution<> dist(0, m_WeightsSum);
+	float randomWeight{ float(dist(e2)) };
+
+	for (int index{ 0 }; index < m_pOptions.size(); ++index) {
+		randomWeight -= m_pOptions[index].second;
+		if (randomWeight < 0) {
+			return index;
+		}
+	}
+	return int(m_pOptions.size() - 1);
 }
 
 SequenceNode::SequenceNode() {};

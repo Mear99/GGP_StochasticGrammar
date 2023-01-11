@@ -7,6 +7,7 @@
 
 int main()
 {
+
     std::cout << "-- Stochastic grammar demo --\n";
 
     LeafNode* node = new LeafNode("test");
@@ -17,9 +18,8 @@ int main()
     nodeSequence->AddElement(node);
     nodeSequence->AddElement(nodeSelect);
 
-    nodeSelect->AddOption(nodeSequence);
-    nodeSelect->AddOption(nodeSequence);
-    nodeSelect->AddOption(node2);
+    nodeSelect->AddOption(nodeSequence, 0.8f);
+    nodeSelect->AddOption(node2, 0.2f);
 
     Grammar* grammar = new Grammar(nodeSequence);
 

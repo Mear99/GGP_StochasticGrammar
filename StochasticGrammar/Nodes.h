@@ -45,10 +45,13 @@ class SelectNode : public Node
 		SelectNode& operator=(SelectNode&&) = delete;
 
 		virtual std::string Parse() override;
-		void AddOption(Node* option);
+		void AddOption(Node* option, float weight);
 
 	private:
-		std::vector<Node*> m_pOptions;
+		std::vector<std::pair<Node*, float>> m_pOptions;
+		float m_WeightsSum{ 0 };
+
+		int WeightedRandom();
 };
 
 class SequenceNode : public Node
