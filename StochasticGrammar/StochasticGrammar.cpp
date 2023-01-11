@@ -9,13 +9,16 @@ int main()
 {
     std::cout << "-- Stochastic grammar demo --\n";
 
-    Grammar* grammar = new Grammar();
+    Grammar<std::string>* grammar = new Grammar<std::string>();
 
     grammar->ParseRule("options", "0.5 test | 0.5 alt");
-    grammar->ParseRule("decide", "options # 5");
+    grammar->ParseRule("root", "0.2 options # 3 | 0.8 options # 8");
 
     for (int i{ 0 }; i < 10; ++i) {
-        std::cout << grammar->GenerateSequence("decide") << "\n";
+        auto result{ grammar->GenerateSequence("root") };
+
+        std::copy(result.begin(), result.end(), std::ostream_iterator<std::string>(std::cout, " "));
+        std::cout << "\n";
     }
 
     delete grammar;

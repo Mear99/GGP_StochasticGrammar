@@ -127,8 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Nodes.cpp" />
-    <ClCompile Include="Grammar.cpp" />
     <ClCompile Include="StochasticGrammar.cpp" />
   </ItemGroup>
   <ItemGroup>

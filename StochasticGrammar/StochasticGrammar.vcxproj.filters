@@ -18,12 +18,6 @@
     <ClCompile Include="StochasticGrammar.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
-    <ClCompile Include="Nodes.cpp">
-      <Filter>Project Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Grammar.cpp">
-      <Filter>Project Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Nodes.h">
