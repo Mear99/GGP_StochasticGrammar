@@ -4,7 +4,7 @@
 #include <random>
 #include <algorithm>
 
-#define MAXDEPTH 10
+#define MAXDEPTH 3
 
 // Random float generator
 std::random_device rd;
@@ -63,10 +63,6 @@ LeafNode<Data>::LeafNode(Data value)
 template<typename Data>
 void LeafNode<Data>::Parse(std::vector<Data>& result, int depth) {
 
-	if (depth > MAXDEPTH) {
-		return;
-	}
-
 	result.push_back(m_Value);
 }
 
@@ -108,15 +104,10 @@ SelectNode<Data>::SelectNode() {};
 template<typename Data>
 void SelectNode<Data>::Parse(std::vector<Data>& result, int depth) {
 
-	if (depth > MAXDEPTH) {
-		return;
-	}
-
 	if (m_pOptions.size() > 0) {
 		int index{ WeightedRandom() };
-		m_pOptions[index].first->Parse(result, ++depth);
+		m_pOptions[index].first->Parse(result, depth);
 	}
-	--depth;
 }
 
 template<typename Data>
@@ -178,14 +169,8 @@ SequenceNode<Data>::SequenceNode() {};
 template<typename Data>
 void SequenceNode<Data>::Parse(std::vector<Data>& result, int depth) {
 
-	if (depth > MAXDEPTH) {
-		return;
-	}
-
 	for (auto& element : m_pElements) {
-		++depth;
 		element->Parse(result, depth);
-		--depth;
 	}
 }
 
@@ -236,21 +221,64 @@ RepetitionNode<Data>::RepetitionNode(Node<Data>* node, int repetitions)
 template<typename Data>
 void RepetitionNode<Data>::Parse(std::vector<Data>& result, int depth) {
 
-	if (depth > MAXDEPTH) {
-		return;
-	}
-
-
 	for (int i{ 0 }; i < m_Repetitions; ++i) {
 
-		m_pNode->Parse(result, ++depth);
-		--depth;
+		m_pNode->Parse(result, depth);
 	}
-
 }
 
 template<typename Data>
 void RepetitionNode<Data>::SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) {
+	if (m_pNode == oldNode) {
+		m_pNode = newNode;
+	}
+}
+
+//*** LNODE ***
+//
+//
+template<typename Data>
+class LNode : public Node<Data>
+{
+public:
+	LNode(Node<Data>* node, std::shared_ptr<Node<Data>> fallback);
+	virtual ~LNode() = default;
+
+	LNode(const LNode&) = delete;
+	LNode(LNode&&) = delete;
+	LNode& operator=(const LNode&) = delete;
+	LNode& operator=(LNode&&) = delete;
+
+	virtual void Parse(std::vector<Data>& result, int depth) override;
+	virtual void SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) override;
+
+private:
+	Node<Data>* m_pNode;
+	std::shared_ptr<Node<Data>> m_pFallback;
+};
+
+
+template<typename Data>
+LNode<Data>::LNode(Node<Data>* node, std::shared_ptr<Node<Data>> fallback)
+	: m_pNode{ node }
+	, m_pFallback{ fallback }
+{}
+
+template<typename Data>
+void LNode<Data>::Parse(std::vector<Data>& result, int depth) {
+
+	if (depth >= MAXDEPTH) {
+		m_pFallback->Parse(result, 0);
+		return;
+	}
+
+	m_pNode->Parse(result, ++depth);
+	--depth;
+
+}
+
+template<typename Data>
+void LNode<Data>::SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) {
 	if (m_pNode == oldNode) {
 		m_pNode = newNode;
 	}

@@ -7,6 +7,7 @@
 #define SEQ_DEL " & "
 #define SEL_DEL " | "
 #define REP_DEL " # "
+#define LND_DEL " -> "
 
 using weightedRule = std::pair<std::string, float>;
 using repeatedRule = std::pair<std::string, int>;
@@ -32,6 +33,7 @@ class Grammar
 		void AddSelectorRule(const std::string& name, const std::vector<weightedRule> rules);
 		void AddSequenceRule(const std::string& name, const std::vector<std::string> rules);
 		void AddRepetitionRule(const std::string& name, const repeatedRule rule);
+		void AddLNodeRule(const std::string& name, const std::string& rule, const std::string& fallbackRule);
 
 	private:
 		std::unordered_map<std::string,std::shared_ptr<Node<Data>>> m_pRules;
@@ -39,6 +41,7 @@ class Grammar
 		void ParseSelectorRule(const std::string& name, std::string& rule);
 		void ParseSequenceRule(const std::string& name, std::string& rule);
 		void ParseRepetitionRule(const std::string& name, std::string& rule);
+		void ParseLNodeRule(const std::string& name, std::string& rule);
 		void ParseSingleRule(const std::string& name, std::string rule);
 
 		void ChangeRule(const std::string& ruleName, std::shared_ptr<Node<Data>> newNode);
@@ -142,6 +145,26 @@ void Grammar<Data>::AddRepetitionRule(const std::string& name, const repeatedRul
 }
 
 template<typename Data>
+void Grammar<Data>::AddLNodeRule(const std::string& name, const std::string& rule, const std::string& fallbackRule) {
+	
+	// Non-existing subrule
+	if (m_pRules.find(rule) == m_pRules.end()) {
+		ParseRule(rule, rule);
+	}
+	if (m_pRules.find(fallbackRule) == m_pRules.end()) {
+		ParseRule(fallbackRule, fallbackRule);
+	}
+
+	if (m_pRules.find(name) != m_pRules.end()) {
+		ChangeRule(name, std::make_shared<LNode<Data>>(m_pRules[rule].get(), m_pRules[fallbackRule]));
+		return;
+	}
+
+	// Non-existing rule
+	m_pRules[name] = std::make_shared<LNode<Data>>(m_pRules[rule].get(), m_pRules[fallbackRule]);
+}
+
+template<typename Data>
 void Grammar<Data>::ChangeRule(const std::string& ruleName, std::shared_ptr<Node<Data>> newNode) {
 
 	// Get the old node
@@ -174,6 +197,10 @@ void Grammar<Data>::ParseRule(const std::string& name, const std::string& rule) 
 
 	std::string parsedRule{ rule };
 
+	if (parsedRule.find(LND_DEL) != std::string::npos) {
+		ParseLNodeRule(name, parsedRule);
+		return;
+	}
 	if (parsedRule.find(SEQ_DEL) != std::string::npos) {
 		ParseSequenceRule(name, parsedRule);
 		return;
@@ -249,4 +276,15 @@ void Grammar<Data>::ParseRepetitionRule(const std::string& name, std::string& ru
 
 	int repetitions{ std::stoi(repetitionString) };
 	AddRepetitionRule(name, std::make_pair(ruleName, repetitions));
+}
+
+template<typename Data>
+void Grammar<Data>::ParseLNodeRule(const std::string& name, std::string& rule) {
+
+	std::string del{ LND_DEL };
+	size_t splitIndex = rule.find(del);
+	std::string fallbackName{ rule.substr(0, splitIndex) };
+	std::string ruleName{ rule.substr(splitIndex + del.length(), rule.length() - ruleName.length() - del.length()) };
+
+	AddLNodeRule(name, ruleName, fallbackName);
 }
