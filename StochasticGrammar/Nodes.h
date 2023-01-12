@@ -4,7 +4,7 @@
 #include <random>
 #include <algorithm>
 
-#define MAXDEPTH 10
+#define MAXDEPTH 5
 
 // Random float generator
 std::random_device rd;
@@ -208,7 +208,13 @@ RepetitionNode<Data>::RepetitionNode(Node<Data>* node, int repetitions)
 template<typename Data>
 void RepetitionNode<Data>::Parse(std::vector<Data>& result, int depth) {
 
+	if (depth > MAXDEPTH) {
+		return;
+	}
+
+
 	for (int i{ 0 }; i < m_Repetitions; ++i) {
+
 		m_pNode->Parse(result, ++depth);
 		--depth;
 	}

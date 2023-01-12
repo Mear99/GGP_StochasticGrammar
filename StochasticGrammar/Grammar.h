@@ -66,6 +66,8 @@ void Grammar<std::string>::AddLeaf(const std::string& name, const std::string& l
 
 template<typename Data>
 void Grammar<Data>::AddLeaf(const std::string& name, const Data& data) {
+
+	// Non-existing rule
 	m_pRules[name] = std::make_unique<LeafNode<Data>>(data);
 }
 
@@ -75,13 +77,7 @@ void Grammar<Data>::AddSelectorRule(const std::string& name, const std::vector<w
 	std::unique_ptr<SelectNode<Data>> selectNode = std::make_unique<SelectNode<Data>>();
 	for (auto& rule : rules) {
 
-		// recursive rule
-		if (rule.first == name) {
-			selectNode->AddOption(selectNode.get(), rule.second);
-			continue;
-		}
-
-		// Non-existing Rule?
+		// Non-existing subrule
 		if (m_pRules.find(rule.first) == m_pRules.end()) {
 			ParseRule(rule.first, rule.first);
 		}
@@ -90,6 +86,7 @@ void Grammar<Data>::AddSelectorRule(const std::string& name, const std::vector<w
 		selectNode->AddOption(m_pRules[rule.first].get(), rule.second);
 	}
 
+	// Non-existing rule
 	m_pRules[name] = std::move(selectNode);
 }
 
@@ -98,13 +95,7 @@ void Grammar<Data>::AddSequenceRule(const std::string& name, const std::vector<s
 	std::unique_ptr<SequenceNode<Data>> sequenceNode = std::make_unique<SequenceNode<Data>>();
 	for (auto& rule : rules) {
 
-		// recursive rule
-		if (rule == name) {
-			sequenceNode->AddElement(sequenceNode.get());
-			continue;
-		}
-
-		// Non-existing Rule?
+		// Non-existing subule
 		if (m_pRules.find(rule) == m_pRules.end()) {
 			ParseRule(rule, rule);
 		}
@@ -113,17 +104,19 @@ void Grammar<Data>::AddSequenceRule(const std::string& name, const std::vector<s
 		sequenceNode->AddElement(m_pRules[rule].get());
 	}
 
+	// Non-existing rule
 	m_pRules[name] = std::move(sequenceNode);
 }
 
 template<typename Data>
 void Grammar<Data>::AddRepetitionRule(const std::string& name, const repeatedRule rule) {
 
-	// Non-existing Rule?
+	// Non-existing subrule
 	if (m_pRules.find(rule.first) == m_pRules.end()) {
 		ParseRule(rule.first, rule.first);
 	}
 
+	// Non-existing rule
 	m_pRules[name] = std::make_unique<RepetitionNode<Data>>(m_pRules[rule.first].get(), rule.second);
 }
 

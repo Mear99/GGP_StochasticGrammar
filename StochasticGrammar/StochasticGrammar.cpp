@@ -9,7 +9,7 @@ int main()
 {
     std::cout << "-- Stochastic grammar demo --\n";
 
-    Grammar<std::string>* grammar = new Grammar<std::string>();
+   Grammar<std::string>* grammar = new Grammar<std::string>();
 
     grammar->ParseRule("options", "0.5 test | 0.5 alt");
     grammar->ParseRule("root", "0.2 options # 3 | 0.8 options # 8");
@@ -22,4 +22,5 @@ int main()
     }
 
     delete grammar;
+
 }
