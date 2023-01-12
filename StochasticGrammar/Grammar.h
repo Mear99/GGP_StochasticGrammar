@@ -27,19 +27,21 @@ class Grammar
 
 		std::vector<Data> GenerateSequence(std::string rule);
 
-		void AddLeaf(const std::string& name, const Data& data);
+		void AddSingleRule(const std::string& name, const std::string& rule);
 		void ParseRule(const std::string& name, const std::string& rule);
 		void AddSelectorRule(const std::string& name, const std::vector<weightedRule> rules);
 		void AddSequenceRule(const std::string& name, const std::vector<std::string> rules);
 		void AddRepetitionRule(const std::string& name, const repeatedRule rule);
 
 	private:
-		std::unordered_map<std::string, std::unique_ptr<Node<Data>>> m_pRules;
+		std::unordered_map<std::string,std::shared_ptr<Node<Data>>> m_pRules;
 
 		void ParseSelectorRule(const std::string& name, std::string& rule);
 		void ParseSequenceRule(const std::string& name, std::string& rule);
 		void ParseRepetitionRule(const std::string& name, std::string& rule);
-		void ParseLeafRule(const std::string& name, std::string rule);
+		void ParseSingleRule(const std::string& name, std::string rule);
+
+		void ChangeRule(const std::string& ruleName, std::shared_ptr<Node<Data>> newNode);
 };
 
 template<typename Data>
@@ -58,23 +60,27 @@ std::vector<Data> Grammar<Data>::GenerateSequence(std::string ruleName) {
 	return result;
 }
 
-// Needs some kind of conversion from string to data...
-// Mostly add leaf nodes manually
-void Grammar<std::string>::AddLeaf(const std::string& name, const std::string& leaf) {
-	m_pRules[name] = std::make_unique<LeafNode<std::string>>(leaf);
-}
-
 template<typename Data>
-void Grammar<Data>::AddLeaf(const std::string& name, const Data& data) {
+void Grammar<Data>::AddSingleRule(const std::string& name, const std::string& rule) {
+
+	// Non-existing subrule
+	if (m_pRules.find(rule) == m_pRules.end()) {
+		m_pRules[rule] = std::make_shared<LeafNode<Data>>(rule);
+	}
+
+	if (m_pRules.find(name) != m_pRules.end()) {
+		ChangeRule(name, m_pRules[rule]);
+		return;
+	}
 
 	// Non-existing rule
-	m_pRules[name] = std::make_unique<LeafNode<Data>>(data);
+	m_pRules[name] = m_pRules[rule];
 }
 
 
 template<typename Data>
 void Grammar<Data>::AddSelectorRule(const std::string& name, const std::vector<weightedRule> rules) {
-	std::unique_ptr<SelectNode<Data>> selectNode = std::make_unique<SelectNode<Data>>();
+	std::shared_ptr<SelectNode<Data>> selectNode = std::make_shared<SelectNode<Data>>();
 	for (auto& rule : rules) {
 
 		// Non-existing subrule
@@ -86,13 +92,18 @@ void Grammar<Data>::AddSelectorRule(const std::string& name, const std::vector<w
 		selectNode->AddOption(m_pRules[rule.first].get(), rule.second);
 	}
 
+	if (m_pRules.find(name) != m_pRules.end()) {
+		ChangeRule(name, selectNode);
+		return;
+	}
+
 	// Non-existing rule
-	m_pRules[name] = std::move(selectNode);
+	m_pRules[name] = selectNode;
 }
 
 template<typename Data>
 void Grammar<Data>::AddSequenceRule(const std::string& name, const std::vector<std::string> rules) {
-	std::unique_ptr<SequenceNode<Data>> sequenceNode = std::make_unique<SequenceNode<Data>>();
+	std::shared_ptr<SequenceNode<Data>> sequenceNode = std::make_shared<SequenceNode<Data>>();
 	for (auto& rule : rules) {
 
 		// Non-existing subule
@@ -104,8 +115,13 @@ void Grammar<Data>::AddSequenceRule(const std::string& name, const std::vector<s
 		sequenceNode->AddElement(m_pRules[rule].get());
 	}
 
+	if (m_pRules.find(name) != m_pRules.end()) {
+		ChangeRule(name, sequenceNode);
+		return;
+	}
+
 	// Non-existing rule
-	m_pRules[name] = std::move(sequenceNode);
+	m_pRules[name] = sequenceNode;
 }
 
 template<typename Data>
@@ -116,8 +132,32 @@ void Grammar<Data>::AddRepetitionRule(const std::string& name, const repeatedRul
 		ParseRule(rule.first, rule.first);
 	}
 
+	if (m_pRules.find(name) != m_pRules.end()) {
+		ChangeRule(name, std::make_shared<RepetitionNode<Data>>(m_pRules[rule.first].get(), rule.second));
+		return;
+	}
+
 	// Non-existing rule
-	m_pRules[name] = std::make_unique<RepetitionNode<Data>>(m_pRules[rule.first].get(), rule.second);
+	m_pRules[name] = std::make_shared<RepetitionNode<Data>>(m_pRules[rule.first].get(), rule.second);
+}
+
+template<typename Data>
+void Grammar<Data>::ChangeRule(const std::string& ruleName, std::shared_ptr<Node<Data>> newNode) {
+
+	// Get the old node
+	std::shared_ptr<Node<Data>> oldNode = m_pRules[ruleName];
+	if (oldNode == newNode) {
+		return;
+	}
+
+
+	// Update the rule
+	m_pRules[ruleName] = newNode;
+
+	// Change every reference to the old node to the new one
+	for (auto& rule : m_pRules) {
+		rule.second->SwapDependingNode(oldNode.get(), newNode.get());
+	}	
 }
 
 
@@ -146,7 +186,7 @@ void Grammar<Data>::ParseRule(const std::string& name, const std::string& rule) 
 		ParseRepetitionRule(name, parsedRule);
 		return;
 	}
-	ParseLeafRule(name, rule);
+	ParseSingleRule(name, rule);
 }
 
 template<typename Data>
@@ -195,8 +235,8 @@ void Grammar<Data>::ParseSequenceRule(const std::string& name, std::string& rule
 }
 
 template<typename Data>
-void Grammar<Data>::ParseLeafRule(const std::string& name, std::string rule) {
-	AddLeaf(name, rule);
+void Grammar<Data>::ParseSingleRule(const std::string& name, std::string rule) {
+	AddSingleRule(name, rule);
 }
 
 template<typename Data>

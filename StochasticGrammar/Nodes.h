@@ -4,7 +4,7 @@
 #include <random>
 #include <algorithm>
 
-#define MAXDEPTH 5
+#define MAXDEPTH 10
 
 // Random float generator
 std::random_device rd;
@@ -26,6 +26,7 @@ class Node {
 		Node& operator=(Node&&) = delete;
 
 		virtual void Parse(std::vector<Data>& result, int depth) = 0;
+		virtual void SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) = 0;
 };
 
 template<typename Data>
@@ -48,6 +49,7 @@ class LeafNode : public Node<Data>
 		LeafNode& operator=(LeafNode&&) = delete;
 
 		virtual void Parse(std::vector<Data>& result, int depth) override;
+		virtual void SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) override;
 
 	private:
 		Data m_Value;
@@ -68,6 +70,11 @@ void LeafNode<Data>::Parse(std::vector<Data>& result, int depth) {
 	result.push_back(m_Value);
 }
 
+template<typename Data>
+void LeafNode<Data>::SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) {
+	// No node dependencies
+}
+
 //*** SELECTNODE ***
 //
 //
@@ -85,6 +92,7 @@ class SelectNode : public Node<Data>
 		SelectNode& operator=(SelectNode&&) = delete;
 
 		virtual void Parse(std::vector<Data>& result, int depth) override;
+		virtual void SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) override;
 		void AddOption(Node<Data>* option, float weight);
 
 	private:
@@ -109,6 +117,15 @@ void SelectNode<Data>::Parse(std::vector<Data>& result, int depth) {
 		m_pOptions[index].first->Parse(result, ++depth);
 	}
 	--depth;
+}
+
+template<typename Data>
+void SelectNode<Data>::SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) {
+	for (auto& child : m_pOptions) {
+		if (child.first == oldNode) {
+			child.first = newNode;
+		}
+	}
 }
 
 template<typename Data>
@@ -148,6 +165,7 @@ public:
 	SequenceNode& operator=(SequenceNode&&) = delete;
 
 	virtual void Parse(std::vector<Data>& result, int depth) override;
+	virtual void SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) override;
 	void AddElement(Node<Data>* option);
 
 private:
@@ -168,6 +186,15 @@ void SequenceNode<Data>::Parse(std::vector<Data>& result, int depth) {
 		++depth;
 		element->Parse(result, depth);
 		--depth;
+	}
+}
+
+template<typename Data>
+void SequenceNode<Data>::SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) {
+	for (auto& child : m_pElements) {
+		if (child == oldNode) {
+			child = newNode;
+		}
 	}
 }
 
@@ -193,6 +220,7 @@ public:
 	RepetitionNode& operator=(RepetitionNode&&) = delete;
 
 	virtual void Parse(std::vector<Data>& result, int depth) override;
+	virtual void SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) override;
 
 private:
 	Node<Data>* m_pNode;
@@ -219,4 +247,11 @@ void RepetitionNode<Data>::Parse(std::vector<Data>& result, int depth) {
 		--depth;
 	}
 
+}
+
+template<typename Data>
+void RepetitionNode<Data>::SwapDependingNode(Node<Data>* oldNode, Node<Data>* newNode) {
+	if (m_pNode == oldNode) {
+		m_pNode = newNode;
+	}
 }
