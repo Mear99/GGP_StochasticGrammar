@@ -123,8 +123,6 @@ template<typename Data>
 int SelectNode<Data>::WeightedRandom() {
 	float randomWeight{ float(((rand() % 100)/100.0f ) * int(m_WeightsSum)) };
 
-	std::shuffle(m_pOptions.begin(), m_pOptions.end(), std::random_device{});
-
 	for (int index{ 0 }; index < m_pOptions.size(); ++index) {
 		randomWeight -= m_pOptions[index].second;
 		if (randomWeight < 0) {
