@@ -10,7 +10,7 @@ Let's start simple: Say we want to generate a set 3 of tasks. We need a rule tha
 
 <img src="https://user-images.githubusercontent.com/48439256/213495374-c4f1c691-be54-4aee-aa73-b58395c6e397.png" width=50% height=50%>
 
-Say we want to generate two of these lists, we need another rule (let's call it generate). Let's add this to the representation:
+Say we want to generate two of these lists, we need another rule (let's call it 'Generate'). Let's add this to the representation:
 
 <img src="https://user-images.githubusercontent.com/48439256/213496360-2d6c1024-1c2c-45f3-8c10-f683386b7f44.png" width=50% height=50%>
 
