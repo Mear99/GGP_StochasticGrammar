@@ -39,14 +39,21 @@ Now all this randomness can lead to phrases that keep generating due to recursio
 
 ## Applications
 ### L-Systems
-I needed a way to confirm if the grammar was working correctly. So I looked for some examples of grammar generated sequences and came across L-Systems. L-Systems are an example of formal grammar and can create self-similar fractals. So I tested out the framwork by creating some grammars that mimic the rules of some L-Systems, in particular the fractal plant. L-Systems use recursion to generate the phrase and the max recursion depth is in this context also called iterations. To visualize the result, each leaf node coincides with a drawing action, slowly creating the fractal.
+I needed a way to confirm if the grammar was working correctly. So I looked for some examples of grammar generated sequences and came across L-Systems. L-Systems are an example of formal grammar and can create self-similar fractals. So I tested out the framwork by creating some grammars that mimic the rules of some L-Systems, in particular the fractal plant. L-Systems use recursion to generate the phrase and the max recursion depth is in this context also called iterations. To visualize the result, each leaf node coincides with a drawing action (a function!), slowly creating the fractal.
 Here you can see the influence the recursion depth has on the fractal, which also illustrates why it could also be called iterations.
+
 ![LSystemGif](https://user-images.githubusercontent.com/48439256/213525137-a409a690-1b95-47b0-941a-eceb74aab8b8.gif)
 
 ### River generation
+Now I had this L-System set up, but this does not use a stochastic grammar! So the next step was to add some randomness to it. So I copied over the drawing functions from the L-Systems and wrote my own grammar that uses those functions to generate a random river. I added option for how the rivier should proceed (keep going, turn or split up) and I've given the some weights. Even with such simple grammar, the result is quite good! Here, you can also see the strength of stochastic grammars: Tweaking the weights will give you very different results and you can fine tune them for your application.
 
+![Rivers](https://user-images.githubusercontent.com/48439256/213487819-5ea514a6-3048-49b4-852a-a953967aa1ba.gif)
 
 ### Shop generation
+Now let's go back to a simple textbased example: let's make a grammar that can generate the contents of a shop. Here you can see the different rule I created for this shop to generate as well as one possible shop create from this grammar:
+
+<img src="https://user-images.githubusercontent.com/48439256/213527104-35272f36-72bd-44ae-ba8b-0c7f12e71891.png" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/48439256/213526915-4a17af65-d2c4-4741-9cf1-7bf9573f83c7.png" width=50% height=50%>
 
 ## Conclusion
 
