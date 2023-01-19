@@ -37,6 +37,17 @@ This node will repeat another node based on a chance. Every time the childnode i
 ## Adding recursion
 Now all this randomness can lead to phrases that keep generating due to recursion. One node has a chance to call another node, which calls the first node again and so on and so on. To prevent this, I've added a node that supports recursion safely by setting a recursion depth. Once this depth is reached, the node will call a fallback node and that will be added to the phrase vector. For simple grammars, this node isn't really needed, but more complex grammars will have more recursion and will have more chance to reach the end of the stack and cause a stack overflow. This recursion node will also reduce the risk of that happening. 
 
+## Parsing rules as strings
+I also added the functionality to the framework to create the rules based on a string instead of adding every node manually. The parser will automatically create the rule from a string. Here's how the parsing works:
+* Each string is a single rule
+* Leafnodes are also considered rules
+  - *If there are not strings, they will need to be added manually!
+* Rules need to be seperated by an operator:
+  - sequence: [rule] & [rule]
+  -	selector: [weight] [rule] | [weight] [rule]
+  -	repetiton: [rule] # [times]
+  -	recursion: [fallback rule] -> [normal rule]
+
 ## Applications
 ### L-Systems
 I needed a way to confirm if the grammar was working correctly. So I looked for some examples of grammar generated sequences and came across L-Systems. L-Systems are an example of formal grammar and can create self-similar fractals. So I tested out the framwork by creating some grammars that mimic the rules of some L-Systems, in particular the fractal plant. L-Systems use recursion to generate the phrase and the max recursion depth is in this context also called iterations. To visualize the result, each leaf node coincides with a drawing action (a function!), slowly creating the fractal.
@@ -56,6 +67,12 @@ Now let's go back to a simple textbased example: let's make a grammar that can g
 <img src="https://user-images.githubusercontent.com/48439256/213526915-4a17af65-d2c4-4741-9cf1-7bf9573f83c7.png" width=50% height=50%>
 
 ## Conclusion
+All in all, grammar can be used for a variety of things, especially in generating things. And stochastic grammar are very powerful here, since it allows for probability to play a role. This results in generating random sequences following structured rules, or, in other word, creating structured randomness! I've dabble with different applications ranging from river generation to creating a shop. This only is a small sample of what is possible: the tree-like structure could allow stochastic grammar to generate behaviour trees, one could generate different styles of enemy behaviour,... .
+Still this framework can be expanded:
+- The parser could be expanded to allow for nesting rules with parentheses
+- The framework could allow grammar to be loaded in from a text file
+- New types of nodes could be added, like a node that switches between two rule every time it gets executed
+- ...
 
 ## References
 This research was based on [this paper](http://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter36_Stochastic_Grammars_Not_Just_for_Words.pdf) published in Game AI Pro 3.
