@@ -7,10 +7,10 @@ A grammar is a set of structural constraints for creating phrases. We use it eve
 
 ## Creating grammar
 Let's start simple: Say we want to generate a set 3 of tasks. We need a rule that decribes all the possible tasks and a rule that picks three of those. let's give those rules a name, 'Task' and 'Select' respectively. These two rules have some kind of relationship, namely 'Select' will use 'Task' three times. Let's represent this grafically: 
-![basicGrammarTree](https://user-images.githubusercontent.com/48439256/213495374-c4f1c691-be54-4aee-aa73-b58395c6e397.png)
+![basicGrammarTree](https://user-images.githubusercontent.com/48439256/213495374-c4f1c691-be54-4aee-aa73-b58395c6e397.png =200x200)
 
 Say we want to generate two of these lists, we need another rule (let's call it generate). Let's add this to the representation:
-![extGrammarTree](https://user-images.githubusercontent.com/48439256/213496360-2d6c1024-1c2c-45f3-8c10-f683386b7f44.png)
+![extGrammarTree](https://user-images.githubusercontent.com/48439256/213496360-2d6c1024-1c2c-45f3-8c10-f683386b7f44.png = 200x200)
 
 This starts to look a lot like a tree, so that will be how we will structure the grammar! We will have a couple of different types of nodes in our grammar tree that will allow us to define different rules.
 
