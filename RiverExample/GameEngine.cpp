@@ -31,7 +31,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 Engine::Engine() {
 
-    m_AppName = L"Test";
+    m_AppName = L"River Example - Stochastic Grammar";
 
     // Window class registration
     WNDCLASSEXW wcex;

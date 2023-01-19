@@ -50,9 +50,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameEngine.cpp">
-      <Filter>Application Files</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Application Files</Filter>
     </ClCompile>
@@ -60,6 +57,9 @@
       <Filter>Framework Files</Filter>
     </ClCompile>
     <ClCompile Include="Matrix.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine.cpp">
       <Filter>Framework Files</Filter>
     </ClCompile>
   </ItemGroup>
