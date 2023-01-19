@@ -65,23 +65,6 @@ std::vector<Data> Grammar<Data>::GenerateSequence(std::string ruleName) {
 	return result;
 }
 
-template<>
-void Grammar<std::string>::AddSingleRule(const std::string& name, const std::string& rule) {
-
-	// Non-existing subrule
-	if (m_pRules.find(rule) == m_pRules.end()) {
-		m_pRules[rule] = std::make_shared<LeafNode<std::string>>(rule);
-	}
-
-	if (m_pRules.find(name) != m_pRules.end()) {
-		ChangeRule(name, m_pRules[rule]);
-		return;
-	}
-
-	// Non-existing rule
-	m_pRules[name] = m_pRules[rule];
-}
-
 template<typename Data>
 void Grammar<Data>::AddSingleRule(const std::string& name, const std::string& rule) {
 

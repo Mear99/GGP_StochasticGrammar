@@ -1,12 +1,8 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <random>
 #include <algorithm>
-
-// Random float generator
-std::random_device rd;
-std::mt19937 e2(rd());
+#include <random>
 
 //*** NODE ***
 //
@@ -125,8 +121,7 @@ void SelectNode<Data>::AddOption(Node<Data>* option, float weight) {
 
 template<typename Data>
 int SelectNode<Data>::WeightedRandom() {
-	std::uniform_real_distribution<> dist(0, m_WeightsSum);
-	float randomWeight{ float(dist(e2)) };
+	float randomWeight{ float(((rand() % 100)/100.0f ) * int(m_WeightsSum)) };
 
 	for (int index{ 0 }; index < m_pOptions.size(); ++index) {
 		randomWeight -= m_pOptions[index].second;
@@ -218,12 +213,11 @@ RepetitionNode<Data>::RepetitionNode(Node<Data>* node, float chance)
 
 template<typename Data>
 void RepetitionNode<Data>::Parse(std::vector<Data>& result, int depth) {
-	std::uniform_real_distribution<> dist(0, 1.0f);
 
 	do {
 		m_pNode->Parse(result, depth);
 	} 
-	while (float(dist(e2)) <= m_RepetitionChance);
+	while (float((rand() % 100)/100.0f) <= m_RepetitionChance);
 }
 
 template<typename Data>

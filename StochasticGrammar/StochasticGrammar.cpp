@@ -13,16 +13,15 @@ int main()
 {
     std::cout << "-- Stochastic grammar demo --\n";
 
-    Grammar<std::string>* fern = new Grammar<std::string>();
+    Grammar<std::string>* grammar = new Grammar<std::string>();
 
-    fern->ParseRule("X", " X -> F & + & [ & [ & X & ] & - & X & ] & - & F & [ & - & F & X & ] & + & X");
-    fern->ParseRule("F", "F -> F & F");
+    grammar->ParseRule("A", "a # 0.5");
 
-    auto result{ fern->GenerateSequence("X") };
+    auto result{ grammar->GenerateSequence("A") };
 
     std::copy(result.begin(), result.end(), std::ostream_iterator<std::string>(std::cout, " "));
     std::cout << "\n";
 
-    delete fern;
+    delete grammar;
 
 }
