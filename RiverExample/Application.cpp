@@ -91,6 +91,4 @@ void Application::Paint() {
 		for (auto action : result) {
 			action();
 		}
-
-		ENGINE->DrawString("Depth: " + std::to_string(m_Depth));
 }
