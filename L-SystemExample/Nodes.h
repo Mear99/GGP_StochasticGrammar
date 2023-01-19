@@ -121,7 +121,7 @@ void SelectNode<Data>::AddOption(Node<Data>* option, float weight) {
 
 template<typename Data>
 int SelectNode<Data>::WeightedRandom() {
-	float randomWeight{ float(((rand() % 100)/100.0f ) * int(m_WeightsSum)) };
+	float randomWeight{ float(((rand() % 100)/100.0f ) * m_WeightsSum) };
 
 	for (int index{ 0 }; index < m_pOptions.size(); ++index) {
 		randomWeight -= m_pOptions[index].second;
