@@ -41,7 +41,7 @@ Now all this randomness can lead to phrases that keep generating due to recursio
 I also added the functionality to the framework to create the rules based on a string instead of adding every node manually. The parser will automatically create the rule from a string. Here's how the parsing works:
 * Each string is a single rule
 * Leafnodes are also considered rules
-  - *If there are not strings, they will need to be added manually!
+  *If there are not strings, they will need to be added manually!
 * Rules need to be seperated by an operator:
   - sequence: [rule] & [rule]
   -	selector: [weight] [rule] | [weight] [rule]
