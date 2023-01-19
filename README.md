@@ -39,8 +39,12 @@ Now all this randomness can lead to phrases that keep generating due to recursio
 
 ## Applications
 ### L-Systems
+I needed a way to confirm if the grammar was working correctly. So I looked for some examples of grammar generated sequences and came across L-Systems. L-Systems are an example of formal grammar and can create self-similar fractals. So I tested out the framwork by creating some grammars that mimic the rules of some L-Systems, in particular the fractal plant. L-Systems use recursion to generate the phrase and the max recursion depth is in this context also called iterations. To visualize the result, each leaf node coincides with a drawing action, slowly creating the fractal.
+Here you can see the influence the recursion depth has on the fractal, which also illustrates why it could also be called iterations.
+![LSystemGif](https://user-images.githubusercontent.com/48439256/213525137-a409a690-1b95-47b0-941a-eceb74aab8b8.gif)
 
 ### River generation
+
 
 ### Shop generation
 
