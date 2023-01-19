@@ -77,4 +77,5 @@ Still this framework can be expanded:
 ## References
 * This research was based on [this paper](http://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter36_Stochastic_Grammars_Not_Just_for_Words.pdf) published in Game AI Pro 3.
 * [Stochastic Grammar](https://en.wikipedia.org/wiki/Stochastic_grammar)
+* [L-Systems](https://en.wikipedia.org/wiki/L-system)
 * [Fern fractal](https://www.fractal.garden/l-system/fern-1)
